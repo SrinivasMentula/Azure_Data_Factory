@@ -1,0 +1,9 @@
+{
+	"name": "nemo-srinivas",
+	"location": "uksouth",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "eb784759-c752-4253-b29a-7183f9627629",
+		"tenantId": "9e59db25-d51e-42e6-8317-05ed85ed63f2"
+	}
+}
