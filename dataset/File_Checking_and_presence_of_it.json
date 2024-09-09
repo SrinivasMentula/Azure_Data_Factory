@@ -1,0 +1,29 @@
+{
+	"name": "File_Checking_and_presence_of_it",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "Untitled Notebook 2024-08-29 12_48_07.ipynb",
+				"folderPath": "Youtube Data",
+				"fileSystem": "kagle-data"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "{",
+				"type": "String"
+			}
+		]
+	}
+}
