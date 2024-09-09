@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "Untitled Notebook 2024-08-29 12_48_07.ipynb",
+				"fileName": "complete_file.csv",
 				"folderPath": "Youtube Data",
 				"fileSystem": "kagle-data"
 			},
