@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"folderPath": "Youtube Data/Achieve",
+				"folderPath": "Youtube Data",
 				"fileSystem": "kagle-data"
 			},
 			"columnDelimiter": ",",
