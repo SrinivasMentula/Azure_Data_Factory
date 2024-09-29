@@ -1,0 +1,9 @@
+{
+	"name": "DGRS",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "44d1f9bd-e1fc-4295-893f-aba6194eafa9",
+		"tenantId": "5a5adda8-a3a6-4f74-b038-a867cc305b83"
+	}
+}
