@@ -1,0 +1,27 @@
+{
+	"name": "pipeline_two",
+	"properties": {
+		"activities": [
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "file_name ",
+					"value": "@concat('I0387','/',\n    if(and(equals(utcNow('mm'),'01'),equals(utcNow('dd'),'01')),formatDateTime(addDays(utcNow(),-1 ),'yyyy'),utcNow('yyyy'))\n    ,'/',\nif(equals(utcNow('dd'),'01'),\nconcat(formatDateTime(addDays(startOfMonth(utcNow()), -1), 'MM'),'/',formatDateTime(addDays(utcNow(),-1),'dd')),\nconcat(utcNow('MM'),'/',formatDatetime(addDays(utcNow(),-1),'dd'))))"
+				}
+			}
+		],
+		"variables": {
+			"file_name ": {
+				"type": "String"
+			}
+		},
+		"annotations": []
+	}
+}
