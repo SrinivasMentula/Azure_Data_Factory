@@ -1,0 +1,31 @@
+{
+	"name": "File_name",
+	"properties": {
+		"description": "Publishing_the_Changes",
+		"activities": [
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "file_name",
+					"value": {
+						"value": "@utcNow('dd')",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"file_name": {
+				"type": "String"
+			}
+		},
+		"annotations": []
+	}
+}
