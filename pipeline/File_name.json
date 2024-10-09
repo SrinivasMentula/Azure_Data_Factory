@@ -15,7 +15,7 @@
 				"typeProperties": {
 					"variableName": "file_name",
 					"value": {
-						"value": "@utcNow('dd')",
+						"value": "@utcNow('mm')",
 						"type": "Expression"
 					}
 				}
