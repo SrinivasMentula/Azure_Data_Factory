@@ -10,7 +10,7 @@
 		"schema": [],
 		"typeProperties": {
 			"schema": "dbo",
-			"table": "pipe_line_status"
+			"table": "sample_data"
 		}
 	}
 }
