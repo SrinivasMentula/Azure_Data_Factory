@@ -1,0 +1,31 @@
+{
+	"name": "Text_3",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"File_name": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": {
+					"value": "@concat('Sales_data','/',\n    if(and(equals('01','01'),equals('01','01')),formatDateTime(addDays('2024-01-01',-1 ),'yyyy'),utcNow('yyyy'))\n    ,'/',\nif(equals('01','01'),\nconcat(formatDateTime(addDays(startOfMonth('2024-01-01'), -1), 'MM'),'/',formatDateTime(addDays('2024-01-01',-1),'dd')),\nconcat(utcNow('MM'),'/',formatDatetime(addDays(utcNow(),-1),'dd'))))",
+					"type": "Expression"
+				},
+				"container": "sales-data"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
