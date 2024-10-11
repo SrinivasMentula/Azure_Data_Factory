@@ -2,16 +2,16 @@
 	"name": "Unititled_File_inthe_Achive_Folder",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "AzureDataLakeStorage1",
+			"referenceName": "AzureBlobStorage1",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
-				"type": "AzureBlobFSLocation",
+				"type": "AzureBlobStorageLocation",
 				"folderPath": "Youtube Data/Archieve",
-				"fileSystem": "kagle-data"
+				"container": "kagle-data"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",

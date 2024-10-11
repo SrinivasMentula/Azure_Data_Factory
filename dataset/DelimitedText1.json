@@ -1,0 +1,26 @@
+{
+	"name": "DelimitedText1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": {
+					"value": "@concat('Sales_data','/',\n    if(and(equals(utcNow('dd'),'01'),equals(utcNow('dd'),'01')),formatDateTime(addDays(utcNow('dd'),-1 ),'yyyy'),utcNow('yyyy'))\n    ,'/',\nif(equals(utcNow('dd'),'01'),\nconcat(formatDateTime(addDays(startOfMonth(utcNow('mm')), -1), 'MM'),'/',formatDateTime(addDays(utcNow('dd'),-1),'dd')),\nconcat(utcNow('MM'),'/',formatDatetime(addDays(utcNow(),-1),'dd'))))",
+					"type": "Expression"
+				},
+				"container": "sales-data"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
