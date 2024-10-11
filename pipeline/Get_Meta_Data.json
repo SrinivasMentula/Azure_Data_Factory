@@ -24,6 +24,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -187,7 +188,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@insert into exception_log values (pipeline().Pipeline, pipeline().RunId)",
+								"value": "insert into [dbo].[pipe_line_status]\n(\n    pipeline_name, \n    pipeline_status, \n    run_time \n)\nvalues(\n    '@{pipeline().Pipeline}', \n    'fail',\n    '@{utcNow()}'\n)",
 								"type": "Expression"
 							}
 						}
