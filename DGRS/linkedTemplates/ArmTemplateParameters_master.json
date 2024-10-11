@@ -5,11 +5,20 @@
 		"factoryName": {
 			"value": "DGRS"
 		},
-		"AzureDataLakeStorage1_accountKey": {
+		"AzureBlobStorage1_connectionString": {
 			"value": ""
 		},
-		"AzureDataLakeStorage1_properties_typeProperties_url": {
-			"value": "https://rawdataemployees.dfs.core.windows.net/"
+		"AzureSqlDatabase1_password": {
+			"value": ""
+		},
+		"AzureSqlDatabase1_properties_typeProperties_server": {
+			"value": "dgrs-sales-data.database.windows.net"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_database": {
+			"value": "DGRS"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_userName": {
+			"value": "SrinivasMentula"
 		},
 		"containerUri": {
 			"value": ""
