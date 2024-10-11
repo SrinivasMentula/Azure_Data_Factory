@@ -5,7 +5,14 @@
 			{
 				"name": "Get Metadata1",
 				"type": "GetMetadata",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Stored procedure1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -188,12 +195,38 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "insert into [dbo].[pipe_line_status]\n(\n    pipeline_name, \n    pipeline_status, \n    run_time \n)\nvalues(\n    '@{pipeline().Pipeline}', \n    'fail',\n    '@{utcNow()}'\n)",
+								"value": "insert into [dbo].[pipe_line_status]\n(\n    pipeline_name, \n    pipeline_status, \n    run_time \n)\nvalues(\n    '@{pipeline().Pipeline}', \n    'fail',\n    '@{formatDateTime(utcNow(),'MM-dd-yyyy')}'\n)",
 								"type": "Expression"
 							}
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			},
+			{
+				"name": "Stored procedure1",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[pc_one]",
+					"storedProcedureParameters": {
+						"table_name": {
+							"value": "dbo.sample_data",
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
 				}
 			}
 		],
