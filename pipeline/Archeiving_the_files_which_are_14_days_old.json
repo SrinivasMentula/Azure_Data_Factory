@@ -24,6 +24,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -73,10 +74,12 @@
 									}
 								},
 								"fieldList": [
-									"lastModified"
+									"lastModified",
+									"itemName"
 								],
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
@@ -88,6 +91,20 @@
 				}
 			}
 		],
+		"variables": {
+			"File_Name ": {
+				"type": "String"
+			},
+			"utc_now_value_in_ticks": {
+				"type": "String"
+			},
+			"date": {
+				"type": "String"
+			},
+			"File_name": {
+				"type": "String"
+			}
+		},
 		"annotations": []
 	}
 }
