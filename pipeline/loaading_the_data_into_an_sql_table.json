@@ -23,7 +23,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "DelimitedText1",
+						"referenceName": "ds_sales_data_sales_data",
 						"type": "DatasetReference"
 					},
 					"fieldList": [
@@ -138,19 +138,13 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "Text_3",
-						"type": "DatasetReference",
-						"parameters": {
-							"File_name": {
-								"value": "@variables('year')",
-								"type": "Expression"
-							}
-						}
+						"referenceName": "ds_sales_data_sales_data",
+						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
 					{
-						"referenceName": "AzureSqlTable1",
+						"referenceName": "ds_sample_data_table",
 						"type": "DatasetReference"
 					}
 				]
@@ -269,6 +263,15 @@
 		"variables": {
 			"year": {
 				"type": "String"
+			},
+			"file_name": {
+				"type": "String"
+			},
+			"status": {
+				"type": "String"
+			},
+			"Difference": {
+				"type": "Boolean"
 			}
 		},
 		"annotations": []
