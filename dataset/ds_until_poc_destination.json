@@ -1,25 +1,16 @@
 {
-	"name": "ds_file_copying_based_on_file_status_dynamic",
+	"name": "ds_until_poc_destination",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureBlobStorage1",
 			"type": "LinkedServiceReference"
-		},
-		"parameters": {
-			"source_file_name": {
-				"type": "string"
-			}
 		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": {
-					"value": "@dataset().source_file_name",
-					"type": "Expression"
-				},
-				"folderPath": "Sales_data/file_dump",
+				"folderPath": "Sales_data/file_dump/unitl_poc",
 				"container": "sales-data"
 			},
 			"columnDelimiter": ",",
