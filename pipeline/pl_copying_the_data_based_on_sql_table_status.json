@@ -146,6 +146,18 @@
 			},
 			"file_name": {
 				"type": "String"
+			},
+			"boolean_variable": {
+				"type": "Boolean"
+			},
+			"file_presence": {
+				"type": "Boolean"
+			},
+			"file_status": {
+				"type": "String"
+			},
+			"until_default": {
+				"type": "Boolean"
 			}
 		},
 		"annotations": []
