@@ -7,7 +7,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "TruncateTableSalesImport",
+						"activity": "TruncateTable",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -398,8 +398,8 @@
 				}
 			},
 			{
-				"name": "TruncateTableSalesImport",
-				"type": "Script",
+				"name": "TruncateTable",
+				"type": "SqlServerStoredProcedure",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -409,21 +409,22 @@
 					"secureInput": false
 				},
 				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[usp_truncateTable]",
+					"storedProcedureParameters": {
+						"schema_name": {
+							"value": "\"dbo\"",
+							"type": "String"
+						},
+						"table_name": {
+							"value": "\"tbl_salesImport\"",
+							"type": "String"
+						}
+					}
+				},
 				"linkedServiceName": {
 					"referenceName": "AzureSqlDatabase1",
 					"type": "LinkedServiceReference"
-				},
-				"typeProperties": {
-					"scripts": [
-						{
-							"type": "Query",
-							"text": {
-								"value": "Truncate table dbo.tbl_salesImport",
-								"type": "Expression"
-							}
-						}
-					],
-					"scriptBlockExecutionTimeout": "02:00:00"
 				}
 			}
 		],
