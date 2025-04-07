@@ -5,6 +5,8 @@
 			{
 				"name": "MergeFiles",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "TruncateTable",
@@ -88,6 +90,8 @@
 			{
 				"name": "Copy data1",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "MergeFiles",
@@ -365,6 +369,8 @@
 			{
 				"name": "Deletion_of_MergeFile",
 				"type": "Delete",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Copy data1",
@@ -400,6 +406,8 @@
 			{
 				"name": "TruncateTable",
 				"type": "SqlServerStoredProcedure",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -426,6 +434,95 @@
 					"referenceName": "AzureSqlDatabase1",
 					"type": "LinkedServiceReference"
 				}
+			},
+			{
+				"name": "Stored procedure1",
+				"type": "SqlServerStoredProcedure",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [
+					{
+						"activity": "Deletion_of_MergeFile",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[usp_SalesReport]"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Copy data2",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Stored procedure1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT \r\n      [Sale_Date]\r\n      ,[Branch]\r\n      ,[city]\r\n      ,[Total_Sales]\r\n      ,[Total_Transactions]\r\n      ,[Average_Basket_Value]\r\n      ,[productLine]\r\n      ,[Member_Count]\r\n      ,[Normal_Count]\r\n      ,[Payment_Cash]\r\n      ,[Payment_Credit]\r\n      ,[Payment_Ewallet]\r\n      ,[Sales_Male]\r\n      ,[Sales_Female]\r\n      ,[Total_Quantity_Sold]\r\n      ,[Average_Rating]\r\n      ,[GrossIncome]\r\n      ,[Total_COGS]\r\n      ,[Gross_Margin_Percentage]\r\n      ,[Hour_00]\r\n      ,[Hour_01]\r\n      ,[Hour_02]\r\n      ,[Hour_03]\r\n      ,[Hour_04]\r\n      ,[Hour_05]\r\n      ,[Hour_06]\r\n      ,[Hour_07]\r\n      ,[Hour_08]\r\n      ,[Hour_09]\r\n      ,[Hour_10]\r\n      ,[Hour_11]\r\n      ,[Hour_12]\r\n      ,[Hour_13]\r\n      ,[Hour_14]\r\n      ,[Hour_15]\r\n      ,[Hour_16]\r\n      ,[Hour_17]\r\n      ,[Hour_18]\r\n      ,[Hour_19]\r\n      ,[Hour_20]\r\n      ,[Hour_21]\r\n      ,[Hour_22]\r\n      ,[Hour_23]\r\n  FROM [dbo].[tbl_SalesReportOut]\r\n",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".salesReport"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_tbl_SalesReportOut",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_SalesreportOutBound",
+						"type": "DatasetReference"
+					}
+				]
 			}
 		],
 		"folder": {
