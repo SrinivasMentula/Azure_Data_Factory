@@ -555,9 +555,9 @@
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "copy_data_from_table_staging",
+						"activity": "Set variable1",
 						"dependencyConditions": [
-							"Failed"
+							"Succeeded"
 						]
 					}
 				],
@@ -584,6 +584,186 @@
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			},
+			{
+				"name": "Pipeline_return_variable_sp",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "TruncateTable",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "pipelineReturnValue",
+					"value": [
+						{
+							"key": "Error_message",
+							"value": {
+								"type": "Expression",
+								"content": "@activity('TruncateTable').output.error.message"
+							}
+						}
+					],
+					"setSystemVariable": true
+				}
+			},
+			{
+				"name": "pipeline_return_variable_cp",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "MergeFiles",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "pipelineReturnValue",
+					"value": [
+						{
+							"key": "Error_Message",
+							"value": {
+								"type": "Expression",
+								"content": "@activity('MergeFiles').output.error.message"
+							}
+						}
+					],
+					"setSystemVariable": true
+				}
+			},
+			{
+				"name": "pipeline_return_value_cp",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Copy data1",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "pipelineReturnValue",
+					"value": [
+						{
+							"key": "Error_Message",
+							"value": {
+								"type": "Expression",
+								"content": "@activity('Copy data1').output.error.message"
+							}
+						}
+					],
+					"setSystemVariable": true
+				}
+			},
+			{
+				"name": "pipeLine_return_variable",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Deletion_of_MergeFile",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "pipelineReturnValue",
+					"value": [
+						{
+							"key": "Error_Message",
+							"value": {
+								"type": "Expression",
+								"content": "@activity('Deletion_of_MergeFile').output.error.message"
+							}
+						}
+					],
+					"setSystemVariable": true
+				}
+			},
+			{
+				"name": "pipeline_return_ variable",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "usp_SalesReport",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "pipelineReturnValue",
+					"value": [
+						{
+							"key": "Error_Message",
+							"value": {
+								"type": "Expression",
+								"content": "@activity('usp_SalesReport').output.error.message"
+							}
+						}
+					],
+					"setSystemVariable": true
+				}
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "copy_data_from_table_staging",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "pipelineReturnValue",
+					"value": [
+						{
+							"key": "Error_Message",
+							"value": {
+								"type": "Expression",
+								"content": "@activity('copy_data_from_table_staging').output.error.message"
+							}
+						}
+					],
+					"setSystemVariable": true
 				}
 			}
 		],
