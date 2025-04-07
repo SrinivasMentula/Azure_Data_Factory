@@ -1,0 +1,9 @@
+{
+	"name": "adf-azurelearning-sarath",
+	"location": "uksouth",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "db7d8815-d864-4710-bc42-aa8e97b9eab9",
+		"tenantId": "18bfaa7f-d79b-4701-8672-7b1e1c86c53c"
+	}
+}

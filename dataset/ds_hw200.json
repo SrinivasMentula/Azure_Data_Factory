@@ -1,0 +1,38 @@
+{
+	"name": "ds_hw200",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_saSarath",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "hw_200.csv",
+				"folderPath": "20250331",
+				"container": "inbound"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Index",
+				"type": "String"
+			},
+			{
+				"name": " Height(Inches)\"",
+				"type": "String"
+			},
+			{
+				"name": " \"Weight(Pounds)\"",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,49 @@
+{
+	"name": "ds_LastModifiedOutbound",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_saSarath",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"OutboundFileNmae": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().OutboundFileNmae",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@concat('LastModifiedOutbound_',formatDateTime(utcNow(),'yyyyMMdd'))",
+					"type": "Expression"
+				},
+				"container": "outbound"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": false,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

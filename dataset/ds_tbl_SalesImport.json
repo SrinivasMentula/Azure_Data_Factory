@@ -1,0 +1,105 @@
+{
+	"name": "ds_tbl_SalesImport",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Id",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "InvoiceID",
+				"type": "varchar"
+			},
+			{
+				"name": "City",
+				"type": "varchar"
+			},
+			{
+				"name": "Customer",
+				"type": "varchar"
+			},
+			{
+				"name": "Gender",
+				"type": "varchar"
+			},
+			{
+				"name": "productLine",
+				"type": "varchar"
+			},
+			{
+				"name": "UnitPrice",
+				"type": "decimal",
+				"precision": 9,
+				"scale": 2
+			},
+			{
+				"name": "qty",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Tax",
+				"type": "decimal",
+				"precision": 9,
+				"scale": 2
+			},
+			{
+				"name": "Total",
+				"type": "decimal",
+				"precision": 30,
+				"scale": 2
+			},
+			{
+				"name": "Date",
+				"type": "date"
+			},
+			{
+				"name": "Time",
+				"type": "time",
+				"scale": 7
+			},
+			{
+				"name": "Payment",
+				"type": "varchar"
+			},
+			{
+				"name": "cogs",
+				"type": "varchar"
+			},
+			{
+				"name": "grossMargin",
+				"type": "decimal",
+				"precision": 9,
+				"scale": 2
+			},
+			{
+				"name": "grossIncome",
+				"type": "decimal",
+				"precision": 9,
+				"scale": 2
+			},
+			{
+				"name": "Rating",
+				"type": "decimal",
+				"precision": 9,
+				"scale": 2
+			},
+			{
+				"name": "createDate",
+				"type": "date"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "tbl_salesImport"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

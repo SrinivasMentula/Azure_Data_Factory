@@ -1,0 +1,27 @@
+{
+	"name": "ds_SalesOutbound_data",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_saSarath",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": {
+					"value": "@formatDateTime(utcnow(),'yyyymmdd')",
+					"type": "Expression"
+				},
+				"container": "outbound"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

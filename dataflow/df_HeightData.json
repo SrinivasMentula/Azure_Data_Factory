@@ -1,0 +1,60 @@
+{
+	"name": "df_HeightData",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_hw200",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_HeightOutbound",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "aggregate1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Index as short,",
+				"          { \"Height\"} as double,",
+				"          { \"Weight\"} as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 filter(greaterOrEqual({ \"Height\"},66)) ~> filter1",
+				"filter1 derive({Weight(Kg)} = toDecimal(divide({ \"Weight\"}, 2.20),9,2),",
+				"          Height_Group = iif(greater({ \"Height\"}, 70),'Above70','Below70')) ~> derivedColumn1",
+				"derivedColumn1 aggregate(groupBy(Height_Group),",
+				"     Avg_Height = toDecimal(avg({ \"Height\"}),9,3),",
+				"          Avg_Weight = toDecimal(avg({ \"Weight\"}),9,2),",
+				"          Row_Count = count(1)) ~> aggregate1",
+				"aggregate1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:[(concat('heightoutbound_', toString (currentUTC('GMT'),'yyyyMMdd_HHmmss')))],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink1"
+			]
+		}
+	}
+}

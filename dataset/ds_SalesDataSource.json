@@ -1,0 +1,31 @@
+{
+	"name": "ds_SalesDataSource",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_saSarath",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@concat('MergeFile_',formatDateTime(utcNow(),'yyyyMMdd'),'.csv')",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@concat('I0063/',formatDateTime(utcNow(),'yyyyMMdd'),'/MergeFile')",
+					"type": "Expression"
+				},
+				"container": "inbound"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
