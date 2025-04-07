@@ -609,7 +609,7 @@
 							"key": "Error_message",
 							"value": {
 								"type": "Expression",
-								"content": "@activity('TruncateTable').output.error.message"
+								"content": "@activity('TruncateTable').Error.Message"
 							}
 						}
 					],
@@ -639,7 +639,7 @@
 							"key": "Error_Message",
 							"value": {
 								"type": "Expression",
-								"content": "@activity('MergeFiles').output.error.message"
+								"content": "@activity('MergeFiles').Error.Message"
 							}
 						}
 					],
@@ -669,7 +669,7 @@
 							"key": "Error_Message",
 							"value": {
 								"type": "Expression",
-								"content": "@activity('Copy data1').output.error.message"
+								"content": "@activity('Copy data1').Error.Message"
 							}
 						}
 					],
@@ -699,7 +699,7 @@
 							"key": "Error_Message",
 							"value": {
 								"type": "Expression",
-								"content": "@activity('Deletion_of_MergeFile').output.error.message"
+								"content": "@activity('Deletion_of_MergeFile').Error.Message"
 							}
 						}
 					],
@@ -729,7 +729,7 @@
 							"key": "Error_Message",
 							"value": {
 								"type": "Expression",
-								"content": "@activity('usp_SalesReport').output.error.message"
+								"content": "@activity('usp_SalesReport').Error.Message"
 							}
 						}
 					],
@@ -759,7 +759,7 @@
 							"key": "Error_Message",
 							"value": {
 								"type": "Expression",
-								"content": "@activity('copy_data_from_table_staging').output.error.message"
+								"content": "@activity('copy_data_from_table_staging').Error.Message"
 							}
 						}
 					],
