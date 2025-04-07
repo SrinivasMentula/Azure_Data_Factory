@@ -428,7 +428,7 @@
 				}
 			},
 			{
-				"name": "Stored procedure1",
+				"name": "usp_SalesReport",
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [
 					{
@@ -455,11 +455,11 @@
 				}
 			},
 			{
-				"name": "Copy data2",
+				"name": "copy_data_from_table_staging",
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "Stored procedure1",
+						"activity": "usp_SalesReport",
 						"dependencyConditions": [
 							"Succeeded"
 						]
