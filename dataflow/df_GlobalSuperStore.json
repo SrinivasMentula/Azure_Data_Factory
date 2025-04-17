@@ -1,0 +1,133 @@
+{
+	"name": "df_GlobalSuperStore",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_GlobalSuperStars",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable1",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {Row ID} as string,",
+				"          {Order ID} as string,",
+				"          {Order Date} as string,",
+				"          {Ship Date} as string,",
+				"          {Ship Mode} as string,",
+				"          {Customer ID} as string,",
+				"          {Customer Name} as string,",
+				"          Segment as string,",
+				"          City as string,",
+				"          State as string,",
+				"          Country as string,",
+				"          {Postal Code} as string,",
+				"          Market as string,",
+				"          Region as string,",
+				"          {Product ID} as string,",
+				"          Category as string,",
+				"          {Sub-Category} as string,",
+				"          {Product Name} as string,",
+				"          Sales as string,",
+				"          Quantity as string,",
+				"          Discount as string,",
+				"          Profit as string,",
+				"          {Shipping Cost} as string,",
+				"          {Order Priority} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 derive(Order_Date_converted = toDate(trim({Order Date}), 'dd-MM-yyyy'),",
+				"          Ship_Date_converted = toDate({Ship Date},'dd-MM-yyyy'),",
+				"     partitionBy('hash', 1)) ~> derivedColumn1",
+				"derivedColumn1 select(mapColumn(",
+				"          {Order ID},",
+				"          Order_Date_converted,",
+				"          Ship_Date_converted,",
+				"          {Customer ID},",
+				"          {Customer Name},",
+				"          Segment,",
+				"          City,",
+				"          State,",
+				"          Country,",
+				"          {Postal Code},",
+				"          Market,",
+				"          Region,",
+				"          {Product ID},",
+				"          Category,",
+				"          {Sub-Category},",
+				"          {Product Name},",
+				"          Sales,",
+				"          Quantity,",
+				"          Discount,",
+				"          Profit,",
+				"          {Shipping Cost},",
+				"          {Order Priority},",
+				"          ShipMode = {Ship Mode}",
+				"     ),",
+				"     partitionBy('hash', 1),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 1,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          OrderId = {Order ID},",
+				"          OrderDate = Order_Date_converted,",
+				"          ShipDate = Ship_Date_converted,",
+				"          CustomerId = {Customer ID},",
+				"          CustomerName = {Customer Name},",
+				"          Segment,",
+				"          City,",
+				"          State,",
+				"          Country,",
+				"          PostalCode = {Postal Code},",
+				"          Market,",
+				"          Region,",
+				"          ProductId = {Product ID},",
+				"          Category,",
+				"          Subcategory = {Sub-Category},",
+				"          ProductName = {Product Name},",
+				"          Sales,",
+				"          Quantity,",
+				"          Discount,",
+				"          Profit,",
+				"          ShippingCost = {Shipping Cost},",
+				"          OrderPriority = {Order Priority},",
+				"          ShipMode",
+				"     ),",
+				"     partitionBy('hash', 1)) ~> sink1"
+			]
+		}
+	}
+}
