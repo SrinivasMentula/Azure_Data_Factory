@@ -603,6 +603,52 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/pl_GlobalSuperStoes')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "dataflow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "df_GlobalSuperStore",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/df_GlobalSuperStore')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/pl_HeightData')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -658,8 +704,6 @@
 					{
 						"name": "MergeFiles",
 						"type": "Copy",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "TruncateTable",
@@ -743,8 +787,6 @@
 					{
 						"name": "Copy data1",
 						"type": "Copy",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "MergeFiles",
@@ -1024,8 +1066,6 @@
 					{
 						"name": "Deletion_of_MergeFile",
 						"type": "Delete",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Copy data1",
@@ -1061,8 +1101,6 @@
 					{
 						"name": "TruncateTable",
 						"type": "SqlServerStoredProcedure",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -1091,10 +1129,8 @@
 						}
 					},
 					{
-						"name": "Stored procedure1",
+						"name": "usp_SalesReport",
 						"type": "SqlServerStoredProcedure",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Deletion_of_MergeFile",
@@ -1120,11 +1156,11 @@
 						}
 					},
 					{
-						"name": "Copy data2",
+						"name": "copy_data_from_table_staging",
 						"type": "Copy",
 						"dependsOn": [
 							{
-								"activity": "Stored procedure1",
+								"activity": "usp_SalesReport",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -1180,6 +1216,258 @@
 								"parameters": {}
 							}
 						]
+					},
+					{
+						"name": "success status of pipeline",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "copy_data_from_table_staging",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "insert into ADF_Processing_Logs\n(\n   [Pipeline_name],\n   [status]\n)\nvalues\n(\n   '@{pipeline().Pipeline}',\n   'Success'\n)",
+										"type": "Expression"
+									}
+								}
+							],
+							"scriptBlockExecutionTimeout": "02:00:00"
+						}
+					},
+					{
+						"name": "Failure status of pipeline",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "Set variable1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "insert into ADF_Processing_Logs\n(\n   [Pipeline_name],\n   [status]\n)\nvalues\n(\n   '@{pipeline().Pipeline}',\n   'Failed'\n)",
+										"type": "Expression"
+									}
+								}
+							],
+							"scriptBlockExecutionTimeout": "02:00:00"
+						}
+					},
+					{
+						"name": "Pipeline_return_variable_sp",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "TruncateTable",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "pipelineReturnValue",
+							"value": [
+								{
+									"key": "Error_message",
+									"value": {
+										"type": "Expression",
+										"content": "@activity('TruncateTable').Error.Message"
+									}
+								}
+							],
+							"setSystemVariable": true
+						}
+					},
+					{
+						"name": "pipeline_return_variable_cp",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "MergeFiles",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "pipelineReturnValue",
+							"value": [
+								{
+									"key": "Error_Message",
+									"value": {
+										"type": "Expression",
+										"content": "@activity('MergeFiles').Error.Message"
+									}
+								}
+							],
+							"setSystemVariable": true
+						}
+					},
+					{
+						"name": "pipeline_return_value_cp",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Copy data1",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "pipelineReturnValue",
+							"value": [
+								{
+									"key": "Error_Message",
+									"value": {
+										"type": "Expression",
+										"content": "@activity('Copy data1').Error.Message"
+									}
+								}
+							],
+							"setSystemVariable": true
+						}
+					},
+					{
+						"name": "pipeLine_return_variable",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Deletion_of_MergeFile",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "pipelineReturnValue",
+							"value": [
+								{
+									"key": "Error_Message",
+									"value": {
+										"type": "Expression",
+										"content": "@activity('Deletion_of_MergeFile').Error.Message"
+									}
+								}
+							],
+							"setSystemVariable": true
+						}
+					},
+					{
+						"name": "pipeline_return_ variable",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "usp_SalesReport",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "pipelineReturnValue",
+							"value": [
+								{
+									"key": "Error_Message",
+									"value": {
+										"type": "Expression",
+										"content": "@activity('usp_SalesReport').Error.Message"
+									}
+								}
+							],
+							"setSystemVariable": true
+						}
+					},
+					{
+						"name": "Set variable1",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "copy_data_from_table_staging",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "pipelineReturnValue",
+							"value": [
+								{
+									"key": "Error_Message",
+									"value": {
+										"type": "Expression",
+										"content": "@activity('copy_data_from_table_staging').Error.Message"
+									}
+								}
+							],
+							"setSystemVariable": true
+						}
 					}
 				],
 				"policy": {
@@ -1517,8 +1805,8 @@
 				"type": "AzureSqlTable",
 				"schema": [],
 				"typeProperties": {
-					"schema": "dbo",
-					"table": "sample_data"
+					"schema": "gss",
+					"table": "tbl_GlobalSuperStore"
 				}
 			},
 			"dependsOn": [
@@ -1692,6 +1980,131 @@
 						"type": "String"
 					},
 					{
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_saSarath')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_GlobalSuperStars')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_saSarath",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "Global_Superstore2.csv",
+						"container": "inbound"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Row ID",
+						"type": "String"
+					},
+					{
+						"name": "Order ID",
+						"type": "String"
+					},
+					{
+						"name": "Order Date",
+						"type": "String"
+					},
+					{
+						"name": "Ship Date",
+						"type": "String"
+					},
+					{
+						"name": "Ship Mode",
+						"type": "String"
+					},
+					{
+						"name": "Customer ID",
+						"type": "String"
+					},
+					{
+						"name": "Customer Name",
+						"type": "String"
+					},
+					{
+						"name": "Segment",
+						"type": "String"
+					},
+					{
+						"name": "City",
+						"type": "String"
+					},
+					{
+						"name": "State",
+						"type": "String"
+					},
+					{
+						"name": "Country",
+						"type": "String"
+					},
+					{
+						"name": "Postal Code",
+						"type": "String"
+					},
+					{
+						"name": "Market",
+						"type": "String"
+					},
+					{
+						"name": "Region",
+						"type": "String"
+					},
+					{
+						"name": "Product ID",
+						"type": "String"
+					},
+					{
+						"name": "Category",
+						"type": "String"
+					},
+					{
+						"name": "Sub-Category",
+						"type": "String"
+					},
+					{
+						"name": "Product Name",
+						"type": "String"
+					},
+					{
+						"name": "Sales",
+						"type": "String"
+					},
+					{
+						"name": "Quantity",
+						"type": "String"
+					},
+					{
+						"name": "Discount",
+						"type": "String"
+					},
+					{
+						"name": "Profit",
+						"type": "String"
+					},
+					{
+						"name": "Shipping Cost",
+						"type": "String"
+					},
+					{
+						"name": "Order Priority",
 						"type": "String"
 					}
 				]
@@ -2719,6 +3132,145 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/df_GlobalSuperStore')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "ds_GlobalSuperStars",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTable1",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "select1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          {Row ID} as string,",
+						"          {Order ID} as string,",
+						"          {Order Date} as string,",
+						"          {Ship Date} as string,",
+						"          {Ship Mode} as string,",
+						"          {Customer ID} as string,",
+						"          {Customer Name} as string,",
+						"          Segment as string,",
+						"          City as string,",
+						"          State as string,",
+						"          Country as string,",
+						"          {Postal Code} as string,",
+						"          Market as string,",
+						"          Region as string,",
+						"          {Product ID} as string,",
+						"          Category as string,",
+						"          {Sub-Category} as string,",
+						"          {Product Name} as string,",
+						"          Sales as string,",
+						"          Quantity as string,",
+						"          Discount as string,",
+						"          Profit as string,",
+						"          {Shipping Cost} as string,",
+						"          {Order Priority} as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> source1",
+						"source1 derive(Order_Date_converted = toDate(trim({Order Date}), 'dd-MM-yyyy'),",
+						"          Ship_Date_converted = toDate({Ship Date},'dd-MM-yyyy'),",
+						"     partitionBy('hash', 1)) ~> derivedColumn1",
+						"derivedColumn1 select(mapColumn(",
+						"          {Order ID},",
+						"          Order_Date_converted,",
+						"          Ship_Date_converted,",
+						"          {Customer ID},",
+						"          {Customer Name},",
+						"          Segment,",
+						"          City,",
+						"          State,",
+						"          Country,",
+						"          {Postal Code},",
+						"          Market,",
+						"          Region,",
+						"          {Product ID},",
+						"          Category,",
+						"          {Sub-Category},",
+						"          {Product Name},",
+						"          Sales,",
+						"          Quantity,",
+						"          Discount,",
+						"          Profit,",
+						"          {Shipping Cost},",
+						"          {Order Priority},",
+						"          ShipMode = {Ship Mode}",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     saveOrder: 1,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          OrderId = {Order ID},",
+						"          OrderDate = Order_Date_converted,",
+						"          ShipDate = Ship_Date_converted,",
+						"          CustomerId = {Customer ID},",
+						"          CustomerName = {Customer Name},",
+						"          Segment,",
+						"          City,",
+						"          State,",
+						"          Country,",
+						"          PostalCode = {Postal Code},",
+						"          Market,",
+						"          Region,",
+						"          ProductId = {Product ID},",
+						"          Category,",
+						"          Subcategory = {Sub-Category},",
+						"          ProductName = {Product Name},",
+						"          Sales,",
+						"          Quantity,",
+						"          Discount,",
+						"          Profit,",
+						"          ShippingCost = {Shipping Cost},",
+						"          OrderPriority = {Order Priority},",
+						"          ShipMode",
+						"     ),",
+						"     partitionBy('hash', 1)) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_GlobalSuperStars')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTable1')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/df_HeightData')]",
