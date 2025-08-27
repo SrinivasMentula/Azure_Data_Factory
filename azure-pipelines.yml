@@ -5,13 +5,12 @@ pool:
   name: Default      # Your agent pool
   demands:
     agent.name -equals SRINIVAS
-
 steps:
 - task: AzureCLI@2
   inputs:
     azureSubscription: 'Free_Subscriptin_using_service_principal'
-    scriptType: 'bash'
+    scriptType: 'ps'
     scriptLocation: 'inlineScript'
     inlineScript: |
-      echo "Service connection works!"
+      Write-Host "Service connection works!"
       az account show
