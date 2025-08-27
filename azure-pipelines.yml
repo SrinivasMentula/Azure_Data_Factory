@@ -1,14 +1,17 @@
 trigger:
-- main   # this runs the pipeline whenever there is a commit to main branch
+- none  # This means it won't run automatically
 
 pool:
-  name: Default   # your agent pool
+  name: Default      # Your agent pool
+  demands:
+    agent.name -equals SRINIVAS
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'Free_Subscriptin_using_service_principal'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      echo "Service connection works!"
+      az account show
